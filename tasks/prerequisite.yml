@@ -1,1 +1,15 @@
+- name: Add repository Elro
+  ansible.builtin.yum_repository:
+    name: elrepo
+    description: ELREPO YUM repo
+    baseurl: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
 
+- name: Install DRBD module
+  ansible.builtin.dnf:
+    name: kmod-drbd90
+    state: latest
+
+- name: Install DRBD package
+  ansible.builtin.dnf:
+    name: drbd90-utils
+    state: latest
