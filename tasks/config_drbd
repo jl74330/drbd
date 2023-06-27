@@ -1,1 +1,7 @@
-
+- name: Copy global common conf
+  ansible.builtin.copy:
+    src: files/global_common.conf
+    dest: /etc/drbd.d/global_common.conf
+    owner: foo
+    group: foo
+    mode: '0644'
