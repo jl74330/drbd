@@ -1,4 +1,4 @@
-- name: Add repository Elro
+- name: Add repository Elrepo
   ansible.builtin.yum_repository:
     name: elrepo
     description: ELREPO YUM repo
