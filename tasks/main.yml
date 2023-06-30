@@ -1,1 +1,9 @@
-
+- name: "[mq] Configuration des pré-requis"
+      include_tasks: 
+        file: prerequisite.yml
+      tags: prerequisite
+- name: "[mq] Installation de IBM MQSERIES"
+      include_tasks: 
+        file: "config_drbd.yml"
+      tags: install
+    
