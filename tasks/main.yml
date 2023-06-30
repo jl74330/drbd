@@ -1,10 +1,9 @@
 ---
 - name: Install prerequis
-      include_tasks: 
-        file: prerequisite.yml
-      tags: prerequisite
+  include_tasks: 
+       file: prerequisite.yml
+  tags: prerequisite
 - name: Configuration DRBD
-      include_tasks: 
+  include_tasks: 
         file: "config_drbd.yml"
-      tags: install
-    
+  tags: install
