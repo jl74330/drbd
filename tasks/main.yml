@@ -1,3 +1,4 @@
+---
 - name: "[mq] Configuration des pré-requis"
       include_tasks: 
         file: prerequisite.yml
