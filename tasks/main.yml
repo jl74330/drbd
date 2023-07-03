@@ -1,9 +1,29 @@
 ---
-- name: Install prerequis
-  include_tasks: 
-       file: prerequisite.yml
-  tags: prerequisite
-- name: Configuration DRBD
-  include_tasks: 
-        file: "config_drbd.yml"
-  tags: install
+tasks:
+  - name: Copy global common conf
+    ansible.builtin.copy:
+      src: files/global_common.conf
+      dest: /etc/drbd.d/global_common.conf
+      owner: root
+      group: root
+      mode: '0600'
+
+  - name: Copy r0
+    ansible.builtin.copy:
+      src: files/r0.res
+      dest: /etc/drbd.d/r0.res
+      owner: root
+      group: root
+      mode: '0600'
+
+  - name: Create ressource DRBD
+    ansible.builtin.command: drbdadm create r0
+
+  - name: Initialize ressource DRBD
+    ansible.builtin.command: drbdadm up r0
+
+  - name: Make one node primary
+    ansible.builtin.command: drbdadm primary --force r0
+
+  - name: check status
+    ansible.builtin.command: drbdadm status
