@@ -13,9 +13,9 @@
     
     - name: Add repository Elrepo 9
       ansible.builtin.dnf:
-        name: elrepo
+        name: elrepo-release
         description: ELREPO YUM repo
-        baseurl: elrepo-release
+        state: latest
  #       when: ansible_distribution_major_version = 9
 
     - name: Install DRBD module
