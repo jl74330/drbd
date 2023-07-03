@@ -14,7 +14,6 @@
     - name: Add repository Elrepo 9
       ansible.builtin.dnf:
         name: elrepo-release
-        description: ELREPO YUM repo
         state: latest
  #       when: ansible_distribution_major_version = 9
 
