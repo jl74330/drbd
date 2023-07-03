@@ -44,7 +44,7 @@
         mode: '0600'
 
     - name: Create ressource DRBD
-      ansible.builtin.command: drbdadm create r0
+      ansible.builtin.command: drbdadm create-md r0
  
     - name: Initialize ressource DRBD
       ansible.builtin.command: drbdadm up r0
