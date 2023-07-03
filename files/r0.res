@@ -11,10 +11,10 @@ disk /dev/vg_mq/lv_opt_mqm;
 meta-disk internal;
 }
 
-on lay6lnx0001.gdc.geodis.org {
+on {{ drbd_host_node1 }}  {
 address 10.65.129.148:7788;
 }
-on lay6lnx0002.gdc.geodis.org {
+on  {{ drbd_host_node2 }}
 address 10.65.132.121:7788;
 }
 }
