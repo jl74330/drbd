@@ -29,7 +29,7 @@
 
     - name: Copy global common conf
       ansible.builtin.copy:
-        src: files/global_common.conf
+        src: global_common.conf
         dest: /etc/drbd.d/global_common.conf
         owner: root
         group: root
@@ -37,7 +37,7 @@
 
     - name: Copy r0
       ansible.builtin.copy:
-        src: files/r0.res
+        src: r0.res
         dest: /etc/drbd.d/r0.res
         owner: root
         group: root
