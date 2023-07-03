@@ -37,8 +37,8 @@
 
     - name: Copy r0
       ansible.builtin.copy:
-        src: r0.res
-        dest: /home/james/ansible/playbook/drbd/files/etc/drbd.d/r0.res
+        src: /home/james/ansible/playbook/drbd/files/r0.res
+        dest: /etc/drbd.d/r0.res
         owner: root
         group: root
         mode: '0600'
