@@ -19,12 +19,12 @@
 
     - name: Install DRBD module
       ansible.builtin.dnf:
-        name: kmod-drbd90
+        name: kmod-drbd9x
         state: latest
 
     - name: Install DRBD package
       ansible.builtin.dnf:
-        name: drbd90-utils
+        name: drbd9x-utils
         state: latest
 
     - name: Copy global common conf
