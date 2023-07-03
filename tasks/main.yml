@@ -12,25 +12,24 @@
 #        when: ansible_distribution_major_version = 8
     
     - name: Add repository Elrepo 9
-      ansible.builtin.yum_repository:
-        name: elrepo_9
-        description: ELREPO YUM repo
-        baseurl: https://www.elrepo.org/elrepo-release-9.el9.elrepo.noarch.rpm
+      ansible.builtin.dnf:
+        name: elrepo-release
+        state: latest
  #       when: ansible_distribution_major_version = 9
 
     - name: Install DRBD module
       ansible.builtin.dnf:
-        name: kmod-drbd90
+        name: kmod-drbd9x
         state: latest
 
     - name: Install DRBD package
       ansible.builtin.dnf:
-        name: drbd90-utils
+        name: drbd9x-utils
         state: latest
 
     - name: Copy global common conf
       ansible.builtin.copy:
-        src: files/global_common.conf
+        src: global_common.conf
         dest: /etc/drbd.d/global_common.conf
         owner: root
         group: root
@@ -38,7 +37,7 @@
 
     - name: Copy r0
       ansible.builtin.copy:
-        src: files/r0.res
+        src: r0.res
         dest: /etc/drbd.d/r0.res
         owner: root
         group: root
