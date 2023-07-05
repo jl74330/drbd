@@ -7,9 +7,9 @@ meta-disk internal;
 }
 
 on pcmk-1  {
-address 192.168.1.100:7788;
+address 192.168.1.100:7788;   
 }
-on pcmk-2
+on pcmk-2  {
 address 192.168.1.200:7788;
 }
 }
