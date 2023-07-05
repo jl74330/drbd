@@ -49,8 +49,8 @@
     - name: Initialize ressource DRBD
       ansible.builtin.command: drbdadm up r0
 
-    - name: Make one node primary
-      ansible.builtin.command: drbdadm primary --force r0
+    #- name: Make one node primary
+    #  ansible.builtin.command: drbdadm primary --force r0
 
     - name: check status
       ansible.builtin.command: drbdadm status
