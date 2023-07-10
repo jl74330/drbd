@@ -16,6 +16,6 @@
     state: latest
 
 - name: set selinux to permissive
-    selinux:
-      policy: targeted
-      state: permissive
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
