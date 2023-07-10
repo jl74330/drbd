@@ -15,6 +15,10 @@
     owner: root
     group: root
     mode: '0600'
+- name: Make sure device DRBD is down
+  ansible.builtin.command: drbdadm down r0
+- name: Wipefs on disk
+  ansible.builtin.command: wipefs -afq 
 
 - name: Create ressource DRBD
   ansible.builtin.command: drbdadm create r0
