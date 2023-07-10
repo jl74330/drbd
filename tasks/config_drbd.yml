@@ -1,5 +1,5 @@
 ---
-
+tasks:
 - name: Copy global common conf
   ansible.builtin.copy:
     src: files/global_common.conf
@@ -8,17 +8,24 @@
     group: root
     mode: '0600'
 
-- name: Copy r0
-  ansible.builtin.copy:
-    src: files/r0.res
-    dest: /etc/drbd.d/r0.res
-    owner: root
-    group: root
-    mode: '0600'
+#- name: Copy r0
+#  ansible.builtin.copy:
+#    src: files/r0.res
+#    dest: /etc/drbd.d/r0.res
+#    owner: root
+#    group: root
+#    mode: '0600'
+
+
+
 - name: Make sure device DRBD is down
   ansible.builtin.command: drbdadm down r0
+
 - name: Wipefs on disk
-  ansible.builtin.command: wipefs -afq 
+  ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
+
+- name: Wipefs on disk
+  ansible.builtin.command: wipefs -afq {{ drbd_backing_disk2 }}
 
 - name: Create ressource DRBD
   ansible.builtin.command: drbdadm create r0
