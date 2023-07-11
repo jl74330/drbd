@@ -1,21 +1,26 @@
 ---
-- name: Add repository Elrepo
-  ansible.builtin.yum_repository:
-    name: elrepo
-    description: ELREPO YUM repo
-    baseurl: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+tasks:
+  - name: Add repository Elrepo
+    ansible.builtin.yum_repository:
+      name: elrepo
+      description: ELREPO YUM repo
+      baseurl: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
 
-- name: Install DRBD module
-  ansible.builtin.dnf:
-    name: kmod-drbd9x
-    state: latest
+  - name: Install DRBD module
+    ansible.builtin.dnf:
+      name: kmod-drbd9x
+      state: latest
 
-- name: Install DRBD package
-  ansible.builtin.dnf:
-    name: drbd9x-utils
-    state: latest
+  - name: Install DRBD package
+    ansible.builtin.dnf:
+      name: drbd9x-utils
+      state: latest
 
-- name: set selinux to permissive
-  ansible.posix.selinux:
-    policy: targeted
-    state: permissive
+  - name: set selinux to permissive
+    ansible.posix.selinux:
+      policy: targeted
+      state: permissive
+ - name: check if firewalld is running
+    shell: systemctl status firewalld
+    register: firewalld
+    failed_when: ( firewalld.rc not in [ 3 ] )
