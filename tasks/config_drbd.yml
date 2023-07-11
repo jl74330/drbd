@@ -1,12 +1,12 @@
 ---
 tasks:
-- name: Copy global common conf
-  ansible.builtin.copy:
-    src: files/global_common.conf
-    dest: /etc/drbd.d/global_common.conf
-    owner: root
-    group: root
-    mode: '0600'
+  - name: Copy global common conf
+    ansible.builtin.copy:
+      src: files/global_common.conf
+      dest: /etc/drbd.d/global_common.conf
+      owner: root
+      group: root
+      mode: '0600'
 
 #- name: Copy r0
 #  ansible.builtin.copy:
@@ -16,25 +16,27 @@ tasks:
 #    group: root
 #    mode: '0600'
 
+  - name: configure DRBD device
+    template: src=r0.j2 dest=/etc/drbd.d/r0.res
+    register: drbd0_config
+    
+  - name: Make sure device DRBD is down
+    ansible.builtin.command: drbdadm down r0
 
+  - name: Wipefs on disk
+    ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
 
-- name: Make sure device DRBD is down
-  ansible.builtin.command: drbdadm down r0
+  - name: Wipefs on disk
+    ansible.builtin.command: wipefs -afq {{ drbd_backing_disk2 }}
 
-- name: Wipefs on disk
-  ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
+  - name: Create ressource DRBD
+    ansible.builtin.command: drbdadm create r0
 
-- name: Wipefs on disk
-  ansible.builtin.command: wipefs -afq {{ drbd_backing_disk2 }}
+  - name: Initialize ressource DRBD
+    ansible.builtin.command: drbdadm up r0
 
-- name: Create ressource DRBD
-  ansible.builtin.command: drbdadm create r0
+  - name: Make one node primary
+    ansible.builtin.command: drbdadm primary --force r0
 
-- name: Initialize ressource DRBD
-  ansible.builtin.command: drbdadm up r0
-
-- name: Make one node primary
-  ansible.builtin.command: drbdadm primary --force r0
-
-- name: check status
-  ansible.builtin.command: drbdadm status
+  - name: check status
+    ansible.builtin.command: drbdadm status
