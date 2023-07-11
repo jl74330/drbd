@@ -21,7 +21,7 @@ tasks:
     register: drbd0_config
     
   - name: Make sure device DRBD is down
-    ansible.builtin.command: drbdadm down r0
+    ansible.builtin.command: drbdadm down {{ drbd_filemame_resource }}
 
   - name: Wipefs on disk
     ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
@@ -30,13 +30,14 @@ tasks:
     ansible.builtin.command: wipefs -afq {{ drbd_backing_disk2 }}
 
   - name: Create ressource DRBD
-    ansible.builtin.command: drbdadm create r0
+    ansible.builtin.command: drbdadm create {{ drbd_filemame_resource }}
 
   - name: Initialize ressource DRBD
-    ansible.builtin.command: drbdadm up r0
+    ansible.builtin.command: drbdadm up {{ drbd_filemame_resource }}
 
   - name: Make one node primary
     ansible.builtin.command: drbdadm primary --force r0
-
+    when: ansible_hostname == 'lay6lnx0001.gdc.geodis.org'
+ 
   - name: check status
     ansible.builtin.command: drbdadm status
