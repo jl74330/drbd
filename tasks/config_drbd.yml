@@ -41,3 +41,12 @@ tasks:
  
   - name: check status
     ansible.builtin.command: drbdadm status
+
+  - name: wait for DRBD to become fully Connected
+    run_once: true
+    shell: "drbdadm cstate r0 | grep -v Connected"
+    register: connected
+    until: connected.rc != 0
+    retries: 5
+    delay: 10
+    failed_when: "connected.rc !=0 and connected.rc !=1"
