@@ -6,12 +6,12 @@
   # debugger: on_failed
   
   vars:
-    drbd_filemame_resource: r0
+    drbd_filemame_resource: r1
     drbd_host_node1: pcmk-1
     drbd_host_node2: pcmk-2
     drbd_IP_node1: 10.65.129.148
     drbd_IP_node2: 10.65.132.121
-    drbd_backing_disk1: /dev/sdb
+    drbd_backing_disk1: /dev/mapper/vg_root-drbd
     drbd_backing_disk2: /dev/vg_mq/lv_opt_mqm
 
   tasks:
@@ -33,12 +33,13 @@
   #    mode: '0600'
 
     - name: configure DRBD device
-      template: src=r0.j2 dest=/etc/drbd.d/r0.res
+      template: src=r1.j2 dest=/etc/drbd.d/r1.res
       register: drbd0_config
       
     - name: Make sure device DRBD is down
       command: drbdadm down {{ drbd_filemame_resource }}
-      
+      ignore_errors: true
+
     # try loop task
     - name: Wipefs on disk
       ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
