@@ -1,1 +1,8 @@
-
+---
+drbd_filemame_resource: r0
+drbd_host_node1: pcmk-1
+drbd_host_node2: pcmk-2
+drbd_IP_node1: 192.168.1.100
+drbd_IP_node2: 192.168.1.200
+drbd_backing_disk1: /dev/vg_mq/lv_var_mqm
+drbd_backing_disk2: /dev/vg_mq/lv_opt_mqm

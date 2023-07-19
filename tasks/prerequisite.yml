@@ -1,26 +1,64 @@
 ---
-tasks:
-  - name: Add repository Elrepo
-    ansible.builtin.yum_repository:
-      name: elrepo
-      description: ELREPO YUM repo
-      baseurl: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+- name: "Install DRBD"
+  hosts: all
+  order: sorted
+  become: yes 
+  tasks:
+    
+    - name: Make sure device DRBD is down
+      command: subscription-manager release --set=8
 
-  - name: Install DRBD module
-    ansible.builtin.dnf:
-      name: kmod-drbd9x
-      state: latest
 
-  - name: Install DRBD package
-    ansible.builtin.dnf:
-      name: drbd9x-utils
-      state: latest
+    - name: Upgrade all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+    - name: check if reboot is needed after kernel update
+      shell: LAST_KERNEL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,""); print $1}'); CURRENT_KERNEL=$(uname -r); if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+      ignore_errors: true
+      register: reboot_hint
+  
+    - name: Install required packages
+      package:
+        name: epel-release
+        state: present
 
-  - name: set selinux to permissive
-    ansible.posix.selinux:
-      policy: targeted
-      state: permissive
- - name: check if firewalld is running
-    shell: systemctl status firewalld
-    register: firewalld
-    failed_when: ( firewalld.rc not in [ 3 ] )
+    #- name: Add elrepo8 repository
+    #  yum_repository:
+    #    name: elrepo8
+    #    description: ELRepo.org Community Enterprise Linux Repository - el8
+    #    baseurl: https://www.elrepo.org/elrepo/el8/$basearch/
+    #    gpgcheck: yes
+    #    gpgkey: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+    #    enabled: yes
+    
+    - name: Import a key from a url
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+    
+    
+    - name: Install elrepo-release package
+      package:
+        name: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+        state: present
+
+    - name: Install DRBD module
+      ansible.builtin.dnf:
+        name: kmod-drbd90
+        state: latest
+
+    - name: Install DRBD package
+      ansible.builtin.dnf:
+        name: drbd90-utils
+        state: latest
+
+    #- name: set selinux to permissive
+    #  ansible.posix.selinux:
+    #    policy: targeted
+    #    state: permissive
+    
+    - name: check if firewalld is running
+      shell: systemctl status firewalld
+      register: firewalld
+      failed_when: ( firewalld.rc not in [ 3 ] )

@@ -10,15 +10,13 @@ volume 0 {
   disk      {{ drbd_backing_disk2 }};
   meta-disk internal;
   }
-{% for node in groups['nodes'] %} 
-  on {{ hostvars[node]['ansible_hostname'] }} {
-    address   {{ (hostvars[node]['ansible_all_ipv4_addresses']|ipaddr(drbd_replication_network))[0]}}:7777;
-    node-id   {{loop.index0}};
-  }
-{% endfor %}
+{% set address1 = "10.65.129.148:7788" %}
+  {% set address2 = "10.65.132.121:7788" %}
 
-  connection-mesh {
-        hosts {% for node in groups['nodes'] %}{{ (hostvars[node]['ansible_hostname']) }}{% if not loop.last %} {% endif %}{% endfor %};
+  on lay6lnx0001.gdc.geodis.org {
+    address {{ address1 }};
+  }
+  on lay6lnx0002.gdc.geodis.org {
+    address {{ address2 }};
   }
 }
-
