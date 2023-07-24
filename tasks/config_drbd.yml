@@ -42,23 +42,24 @@
 
     # try loop task
     - name: Wipefs on disk
-      ansible.builtin.command: wipefs -afq {{ drbd_backing_disk1 }}
+      command: wipefs -afq {{ drbd_backing_disk1 }}
       ignore_errors: true
 
     - name: Wipefs on disk
-      ansible.builtin.command: wipefs -afq {{ drbd_backing_disk2 }}
+      command: wipefs -afq {{ drbd_backing_disk2 }}
       ignore_errors: true
 
     - name: Create ressource DRBD
-      ansible.builtin.command: drbdadm create-md {{ drbd_filemame_resource }}
+      command: drbdadm create-md {{ drbd_filemame_resource }} --force
 
     - name: Initialize ressource DRBD
-      ansible.builtin.command: drbdadm up {{ drbd_filemame_resource }}
+      command: drbdadm up {{ drbd_filemame_resource }}
 
     - name: Make one node primary
-      ansible.builtin.command: drbdadm primary --force {{ drbd_filemame_resource }}
-      when: ansible_hostname == 'lay6lnx0001.gdc.geodis.org'
-  
+      command: drbdadm primary --force {{ drbd_filemame_resource }}
+      #when: {{ ansible_hostname }} is 'lay6lnx0001.gdc.geodis.org'
+      run_once: true
+    
     #- name: check status
     #  ansible.builtin.command: drbdadm status
     #    run once: true
