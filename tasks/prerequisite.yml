@@ -1,0 +1,63 @@
+---
+- name: Make rolling OS
+  shell: subscription-manager release --set={{ ansible_distribution_major_version }}
+
+
+- name: Upgrade all packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+
+- name: check if reboot is needed after kernel update
+  shell: LAST_KERNEL=$(rpm -q --last kernel | awk 'NR==1{sub(/kernel-/,""); print $1}'); CURRENT_KERNEL=$(uname -r); if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no restart'; fi
+  ignore_errors: true
+  register: reboot_hint
+
+- debug: msg="{{ reboot_hint.stdout }}"
+
+- name: reboot if necessary
+  reboot: 
+  when: "'reboot' in reboot_hint.stdout"
+
+#- name: Install required packages
+#  package:
+#    name: epel-release
+#    state: present
+
+- name: Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+
+- name: Install elrepo-release package
+  package:
+    name: https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+    state: present
+  
+- name: Install DRBD package
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ drbd_rpm_packages }}"
+
+
+- name: set selinux to permissive
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
+
+- name: "Desactivation et arret du Firewall"
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+  tags: stop_firewall
+  
+- name: "Affichage status firewalld"
+  debug: msg="{{ firewalld.stdout }}"
+
+- name: config | Loading DRBD Kernel Module
+  modprobe:
+    name: drbd
+    state: present

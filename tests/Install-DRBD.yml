@@ -1,0 +1,9 @@
+---
+- name: "[PLAY] Installation du module DRBD replication"
+  hosts: all
+  order: sorted
+  become: yes
+  tasks:
+    - name: "Appel du role DRBD"
+      include_role:
+        name: ../../role_install_drbd

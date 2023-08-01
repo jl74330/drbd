@@ -1,0 +1,32 @@
+---
+drbd_disk_name: /dev/sdd
+drbd_device1: /dev/drbd0
+drbd_device2: /dev/drbd1
+
+# LVM Config
+drbd_vg_name: vg_mq
+
+# LV: /opt
+drbd_lv_opt_name: lv_opt_mq
+drbd_fs_opt_path: '/opt/mq'
+drbd_lv_opt_size: 2g
+
+# LV: /var
+drbd_lv_var_name: lv_var_mq
+drbd_fs_var_path: '/var/mqm'
+drbd_lv_var_size: +100%FREE
+
+drbd_rpm_packages: ['drbd90-utils', 'kmod-drbd90']
+
+drbd_filemame_resource: r1
+drbd_host_node1: lay6lnx0001.gdc.geodis.org
+drbd_host_node2: lay6lnx0002.gdc.geodis.org
+drbd_ip_node1: 10.65.129.148
+drbd_ip_node2: 10.65.132.121
+drbd_port: 7788
+drbd_backing_disk1: /dev/vg_mq/lv_opt_mq
+drbd_backing_disk2: /dev/vg_mq/lv_var_mq
+
+# DRBD ressource file
+pcs_resource_name: p_drbdMQ
+pcs_resource_configfile_name: drbdconf

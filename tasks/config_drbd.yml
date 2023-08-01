@@ -1,0 +1,59 @@
+---
+
+- name: Copy global common conf
+  ansible.builtin.copy:
+    src: global_common.conf
+    dest: /etc/drbd.d/global_common.conf
+    owner: root
+    group: root
+    mode: '0640'
+
+- name: configure DRBD device
+  template: src=r0.j2 dest=/etc/drbd.d/r0.res
+  register: drbd0_config
+  
+- name: Make sure device DRBD is down
+  command: drbdadm down {{ drbd_filemame_resource }}
+  ignore_errors: true
+
+# try loop task
+- name: Wipefs on disk
+  command: wipefs -afq {{ drbd_backing_disk1 }}
+  ignore_errors: true
+
+- name: Wipefs on disk
+  command: wipefs -afq {{ drbd_backing_disk2 }}
+  ignore_errors: true
+
+- name: Create ressource DRBD
+  command: drbdadm create-md {{ drbd_filemame_resource }} --force
+
+- name: Initialize ressource DRBD
+  command: drbdadm up {{ drbd_filemame_resource }}
+
+- name: Make one node primary
+  command: drbdadm primary --force {{ drbd_filemame_resource }}
+  run_once: true
+
+#- name: check status
+#  ansible.builtin.command: drbdadm status
+#    run once: true
+
+- name: wait for DRBD to become fully Connected
+  run_once: true
+  shell: "drbdadm cstate {{ drbd_filemame_resource }} | grep -v Connected"
+  register: connected
+  until: connected.rc != 0
+  retries: 5
+  delay: 20
+  failed_when: "connected.rc !=0 and connected.rc !=1"
+
+- name: Creation des FS 
+  run_once: true
+  filesystem:
+    fstype: xfs
+    dev: "{{ item }}"
+  loop: 
+    - "{{ drbd_device1 }}"
+    - "{{ drbd_device2 }}"
+   

@@ -1,0 +1,15 @@
+resource {{ drbd_filemame_resource }} {
+volume 0 {
+  device    /dev/drbd0;
+  disk      {{ drbd_backing_disk1 }};
+  meta-disk internal;
+  }
+
+  
+on {{ drbd_host_node1 }} {
+address {{drbd_ip_node1 }}:{{ drbd_port }};
+}
+on {{ drbd_host_node2 }} {
+address {{ drbd_ip_node2 }}:{{ drbd_port }};
+}
+}

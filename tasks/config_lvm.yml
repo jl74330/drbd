@@ -1,0 +1,22 @@
+---
+- name: "Creation du PV"
+  lvg:  
+    vg: "{{ drbd_vg_name }}"
+    pvs: "{{ drbd_disk_name }}"
+  
+
+- name: "[ConfigLVM] Vérification de la présence du VG"
+  shell: |-
+    vgck "{{ drbd_vg_name }}"
+  register: result_verifVG
+  failed_when: result_verifVG.rc != 0
+  changed_when: result_verifVG.rc != 0
+
+- name: "[ConfigLVM] Création des LV"
+  lvol:
+    vg: "{{ drbd_vg_name }}"
+    lv: "{{ item.name }}"
+    size: "{{item.size}}"
+  loop:
+    - { name: "{{ drbd_lv_opt_name}}", size: "{{ drbd_lv_opt_size }}" }
+    - { name: "{{ drbd_lv_var_name}}", size: "{{ drbd_lv_var_size }}" }

@@ -1,0 +1,12 @@
+---
+- name: Configuration disk et lvm
+  include_tasks: 
+    file: config_lvm.yml
+- name: Install prerequis
+  include_tasks: 
+    file: prerequisite.yml
+  tags: prerequisite
+- name: Configuration DRBD
+  include_tasks: 
+    file: "config_drbd.yml"
+  tags: install

@@ -1,0 +1,29 @@
+---
+- hosts: all
+  become: true
+  #run_once: true
+  vars:
+    drbd_rpm_packages: ['drbd90-utils', 'kmod-drbd90']  
+    drbd_filemame_resource: r1
+    drbd_host_node1: lay6lnx0001.gdc.geodis.org
+    drbd_host_node2: lay6lnx0002.gdc.geodis.org
+    drbd_ip_node1: 10.65.129.148
+    drbd_ip_node2: 10.65.132.121
+    drbd_port: 7788
+    drbd_backing_disk1: /dev/mapper/vg_root-drbd
+    #drbd_backing_disk2: /dev/vg_mq/lv_opt_mqm
+
+  tasks:
+
+#  - name: Print all available facts
+#    ansible.builtin.debug:
+#      var: ansible_facts
+  
+  - name: "debug"
+    debug: 
+      msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    # with_items: "{{ ansible_play_hosts }}
+  
+  - name: "debug"  
+    debug:   
+      msg: "{{ inventory_hostname }}"  

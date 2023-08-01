@@ -1,0 +1,15 @@
+#!/bin/bash
+
+pcs -f {{ resource_configfile_name }} resource create {{ pcs_resource_name }} ocf:linbit:drbd \
+     drbd_resource={{ drbd_filemame_resource }} op start interval=0s timeout=240s \
+     stop interval=0s timeout=100s \
+monitor interval=31s timeout=20s \
+role=Unpromoted monitor interval=29s timeout=20s role=Promoted
+ 
+	 pcs -f {{ resource_configfile_name }} resource promotable {{ pcs_resource_name }} \
+     promoted-max=1 promoted-node-max=1 clone-max=2 clone-node-max=1 \
+     notify=true
+	 
+	 pcs cluster cib-push {{ resource_configfile_name }} --config
+
+
