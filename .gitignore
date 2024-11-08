@@ -1,0 +1,4 @@
+.vscode
+venvs/*
+!venvs/.gitkeep
+ansible.cfg
